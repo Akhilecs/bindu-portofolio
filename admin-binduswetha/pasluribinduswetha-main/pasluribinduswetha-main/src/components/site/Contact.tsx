@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Route } from "@/routes/index";
 import { Reveal } from "@/components/site/Reveal";
 import { SectionHeading } from "./Reveal";
+import { sendContactEmailFn } from "@/lib/api";
 
 export function Contact() {
   const data = Route.useLoaderData();
@@ -15,18 +16,30 @@ export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) {
       toast.error("Please fill in every field before sending.");
       return;
     }
     setSending(true);
-    setTimeout(() => {
+    try {
+      const res = await sendContactEmailFn({ 
+        name: form.name, 
+        email: form.email, 
+        message: form.message 
+      });
+      if (res.success) {
+        setForm({ name: "", email: "", message: "" });
+        toast.success("Thanks! Your collaboration note has been noted.");
+      } else {
+        toast.error(res.error || "Failed to send email.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred.");
+    } finally {
       setSending(false);
-      setForm({ name: "", email: "", message: "" });
-      toast.success("Thanks! Your collaboration note has been noted.");
-    }, 900);
+    }
   };
 
   return (
@@ -80,13 +93,13 @@ export function Contact() {
               </div>
               <Textarea
                 rows={6}
-                placeholder="Tell me about your research idea or collaboration…"
+                placeholder="Tell me about your research idea or collaboration..."
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
               />
               <motion.div whileTap={{ scale: 0.98 }}>
                 <Button type="submit" size="lg" disabled={sending} className="w-full">
-                  {sending ? "Sending…" : "Send Message"}
+                  {sending ? "Sending..." : "Send Message"}
                   <Send className="ml-1 h-4 w-4" />
                 </Button>
               </motion.div>

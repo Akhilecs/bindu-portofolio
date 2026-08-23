@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getCookie, setCookie } from "@tanstack/react-start/server";
 import fs from "fs/promises";
 import path from "path";
+import nodemailer from "nodemailer";
 
 // Persistence configuration
 const getProfileFilePath = () => process.env.PORTFOLIO_DATA_DIR 
@@ -83,4 +84,48 @@ export const uploadImage = createServerFn({ method: "POST" }).handler(async (ctx
   await fs.writeFile(filePath, buffer);
   
   return { success: true, path: `/gallery/${filename}` };
+});
+
+// Contact Form Handler using Nodemailer
+export const sendContactEmailFn = createServerFn({ method: "POST" }).handler(async (ctx: any) => {
+  const { name, email, subject, message } = ctx.data as { name: string, email: string, subject?: string, message: string };
+  
+  if (!name || !email || !message) {
+    throw new Error("Name, email, and message are required.");
+  }
+
+  // Create reusable transporter object using Zoho SMTP transport
+  const transporter = nodemailer.createTransport({
+    host: "smtp.zoho.in",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: "binduswethapasluri@pasluribinduswetha.com",
+      pass: process.env.ZOHO_PASS || "", 
+    },
+  });
+
+  try {
+    // send mail with defined transport object
+    await transporter.sendMail({
+      from: `"Portfolio Contact Form" <binduswethapasluri@pasluribinduswetha.com>`,
+      to: "binduswethapasluri@pasluribinduswetha.com", // Send to self
+      replyTo: email,
+      subject: `New Contact from ${name}: ${subject || 'No Subject'}`,
+      text: `You have received a new message from your portfolio contact form.\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      html: `
+        <h3>New Contact Form Submission</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Subject:</strong> ${subject || 'N/A'}</p>
+        <hr/>
+        <p>${message.replace(/\n/g, '<br/>')}</p>
+      `,
+    });
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error sending email:", error);
+    return { success: false, error: error.message || "Failed to send email" };
+  }
 });
