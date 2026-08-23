@@ -1,7 +1,14 @@
-import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, redirect } from "@tanstack/react-router";
 import { LayoutDashboard, User, BookOpen, Lightbulb, Award, Briefcase, Settings, Image as ImageIcon } from "lucide-react";
+import { checkAuthFn } from "@/lib/api";
 
 export const Route = createFileRoute("/admin")({
+  beforeLoad: async () => {
+    const isAuth = await checkAuthFn();
+    if (!isAuth) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: AdminLayout,
 });
 
