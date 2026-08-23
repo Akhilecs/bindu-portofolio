@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getCookie, setCookie } from "vinxi/http";
+import { getCookie, setCookie } from "@tanstack/react-start/server";
 import fs from "fs/promises";
 import path from "path";
 
