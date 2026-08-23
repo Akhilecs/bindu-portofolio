@@ -81,24 +81,24 @@ export function Contact() {
 
           <Reveal delay={0.1}>
             <form onSubmit={submit} className="surface-card h-full space-y-4 p-7">
+              <Input
+                placeholder="Subject"
+                value={form.subject}
+                onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              />
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input
-                  placeholder="Your name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
                 <Input
                   type="email"
                   placeholder="Email address"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
+                <Input
+                  placeholder="Your name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
               </div>
-              <Input
-                placeholder="Subject"
-                value={form.subject}
-                onChange={(e) => setForm({ ...form, subject: e.target.value })}
-              />
               <Textarea
                 rows={6}
                 placeholder="Tell me about your research idea or collaboration..."
