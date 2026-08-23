@@ -13,7 +13,7 @@ import { sendContactEmailFn } from "@/lib/api";
 export function Contact() {
   const data = Route.useLoaderData();
   const profile = data.profile || {};
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sending, setSending] = useState(false);
 
   const submit = async (e: FormEvent) => {
@@ -28,11 +28,12 @@ export function Contact() {
         data: {
           name: form.name, 
           email: form.email, 
+          subject: form.subject,
           message: form.message 
         }
       });
       if (res.success) {
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", subject: "", message: "" });
         toast.success("Thanks! Your collaboration note has been noted.");
       } else {
         toast.error(res.error || "Failed to send email.");
@@ -93,6 +94,11 @@ export function Contact() {
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
+              <Input
+                placeholder="Subject"
+                value={form.subject}
+                onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              />
               <Textarea
                 rows={6}
                 placeholder="Tell me about your research idea or collaboration..."
