@@ -100,7 +100,7 @@ export const sendContactEmailFn = createServerFn({ method: "POST" }).handler(asy
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: "binduswethapasluri@pasluribinduswetha.com",
+      user: "binduswetha@pasluribinduswetha.com",
       pass: process.env.ZOHO_PASS || "", 
     },
   });
@@ -108,8 +108,8 @@ export const sendContactEmailFn = createServerFn({ method: "POST" }).handler(asy
   try {
     // send mail with defined transport object
     await transporter.sendMail({
-      from: `"Portfolio Contact Form" <binduswethapasluri@pasluribinduswetha.com>`,
-      to: "binduswethapasluri@pasluribinduswetha.com", // Send to self
+      from: `"Portfolio Contact Form" <binduswetha@pasluribinduswetha.com>`,
+      to: "binduswetha@pasluribinduswetha.com", // Send to self
       replyTo: email,
       subject: `New Contact from ${name}: ${subject || 'No Subject'}`,
       text: `You have received a new message from your portfolio contact form.\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
