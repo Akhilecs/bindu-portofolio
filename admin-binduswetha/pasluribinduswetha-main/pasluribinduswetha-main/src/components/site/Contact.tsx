@@ -25,9 +25,11 @@ export function Contact() {
     setSending(true);
     try {
       const res = await sendContactEmailFn({ 
-        name: form.name, 
-        email: form.email, 
-        message: form.message 
+        data: {
+          name: form.name, 
+          email: form.email, 
+          message: form.message 
+        }
       });
       if (res.success) {
         setForm({ name: "", email: "", message: "" });
